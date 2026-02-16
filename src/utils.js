@@ -2,10 +2,15 @@ var APIHost, Host;
 
 if (window.location.href.startsWith('http://localhost')) {
   Host = 'http://localhost:3000';
-  // Chat API: run "cd functions && node server.js" then use http://localhost:5001
   APIHost =
     process.env.REACT_APP_API_HOST ||
     'http://localhost:5002';
+} else if (process.env.REACT_APP_API_HOST) {
+  Host = window.location.origin;
+  APIHost = process.env.REACT_APP_API_HOST;
+} else if (window.location.hostname.endsWith('.vercel.app')) {
+  Host = window.location.origin;
+  APIHost = window.location.origin;
 } else if (window.location.href.startsWith('https://safarimixer.beta.rehab')) {
   Host = 'https://safarimixer.beta.rehab';
   APIHost = 'https://us-central1-animixer-1d266.cloudfunctions.net';

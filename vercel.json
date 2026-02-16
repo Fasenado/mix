@@ -1,0 +1,7 @@
+{
+  "installCommand": "yarn install --ignore-scripts",
+  "buildCommand": "node ./setup && react-scripts build && node ./render",
+  "outputDirectory": "build",
+  "framework": null,
+  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }]
+}

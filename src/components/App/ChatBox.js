@@ -257,6 +257,9 @@ class ChatBox extends React.Component {
           result = "Couldn't parse response. Check console.";
         }
         this.setResponseOnNode(result, responseNode);
+        if (response.result && response.result.suggestedPart) {
+          this.appendChoiceChips(responseNode, response.result.suggestedPart);
+        }
         if (response.result && response.result.action === 'exit') {
           this.setState({
             dictationEnabled: false
@@ -430,6 +433,24 @@ class ChatBox extends React.Component {
     this.setState({ pauseDictation: pause });
   }
 
+  appendChoiceChips(node, part) {
+    const label = part === 'head' ? 'Head' : part === 'body' ? 'Body' : 'Legs';
+    const examplesHtml = WELCOME_HEAD_EXAMPLES.map(
+      a =>
+        `<span class="choice-chip" data-value="${a} ${part}" style="display:inline-block;margin:4px 6px 4px 0;padding:6px 12px;background:#587b14;color:#fff;border-radius:20px;cursor:pointer;font-size:14px;">${a.charAt(0).toUpperCase() + a.slice(1)} ${label}</span>`
+    ).join('');
+    const wrap = document.createElement('div');
+    wrap.style.marginTop = '10px';
+    wrap.innerHTML = '<p style="margin:0 0 6px 0;font-size:13px;color:#666;">Type in Chat Or pick one:</p><div style="margin-top:6px;">' + examplesHtml + '</div>';
+    node.appendChild(wrap);
+    wrap.querySelectorAll('.choice-chip').forEach(el => {
+      el.addEventListener('click', () => {
+        this.userInput(el.getAttribute('data-value'));
+      });
+    });
+    this.updateScroll();
+  }
+
   showWelcomeMessage() {
     const node = this.createResponseNode();
     const examplesHtml = WELCOME_HEAD_EXAMPLES.map(
@@ -441,7 +462,7 @@ class ChatBox extends React.Component {
       '<p style="margin:0 0 8px 0;">What head would you like?</p>' +
       '<p style="margin:0 0 6px 0;font-size:13px;color:#666;">Example:</p>' +
       '<p style="margin:0 0 8px 0;">Monkey Head</p>' +
-      '<p style="margin:0 0 4px 0;font-size:13px;color:#666;">Or pick one:</p>' +
+      '<p style="margin:0 0 4px 0;font-size:13px;color:#666;">Type in Chat Or pick one:</p>' +
       '<div style="margin-top:8px;">' +
       examplesHtml +
       '</div>';

@@ -1,12 +1,8 @@
 /**
- * Chat proxy: OpenAI + session state for Safari Mixer (head/body/legs).
- * When all three are chosen, returns rich_response with animal card.
+ * Vercel serverless: chat API for Safari Mixer (OpenAI + session head/body/legs).
+ * Env: OPENAI_KEY (or OPENAI_API_KEY) in Vercel Environment Variables.
  */
 const OPENAI_KEY = process.env.OPENAI_KEY || process.env.OPENAI_API_KEY;
-const projectId =
-  process.env.GCLOUD_PROJECT ||
-  process.env.GCP_PROJECT ||
-  process.env.GOOGLE_CLOUD_PROJECT;
 
 const ANIMALS = [
   'antelope', 'buffalo', 'bunny', 'cat', 'chicken', 'crocodile', 'dinosaur',
@@ -17,7 +13,6 @@ const ANIMALS = [
 ];
 
 const STORAGE_BASE = 'https://storage.googleapis.com/animixer-1d266.appspot.com';
-const HOST_DEV = 'http://localhost:3001';
 
 const sessions = Object.create(null);
 
@@ -68,9 +63,9 @@ function parseAllChoices(query) {
   return single ? [single] : [];
 }
 
-function buildAnimalCard(head, body, legs) {
+function buildAnimalCard(head, body, legs, baseUrl) {
   const title = [head, body, legs].map(s => s.charAt(0).toUpperCase() + s.slice(1)).join('-');
-  const shareUrl = `${HOST_DEV}?animal1=${head}&animal2=${body}&animal3=${legs}`;
+  const shareUrl = `${baseUrl}?animal1=${head}&animal2=${body}&animal3=${legs}`;
   const imageUrl = `${STORAGE_BASE}/thumbnails/${head}_${body}_${legs}_thumbnail.png`;
   return {
     result: {
@@ -104,66 +99,38 @@ const SAFARI_MIXER_SYSTEM = `You are Safari Mixer: a friendly bot. The user is c
 Reply in 1 short sentence. After they pick legs (or say "nothing" / "done" when you asked for legs), say something like "Here we go!" or "Ta-da!". 
 If they say "hello" or "hi", greet and ask "What head would you like?". If they give a head, ask for body; if body, ask for legs. Use English, be playful.`;
 
-function openAiChat(query, sessionId) {
-  if (!OPENAI_KEY) return Promise.resolve(null);
-  const rp = require('request-promise');
+async function openAiChat(query, sessionId) {
+  if (!OPENAI_KEY) return null;
   const state = getSession(sessionId);
   const stateLine = `[Current: head=${state.head || '?'} body=${state.body || '?'} legs=${state.legs || '?'}]`;
-  return rp({
+  const res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
-    uri: 'https://api.openai.com/v1/chat/completions',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${OPENAI_KEY}`
     },
-    body: {
+    body: JSON.stringify({
       model: 'gpt-4o-mini',
       messages: [
         { role: 'system', content: SAFARI_MIXER_SYSTEM + '\n' + stateLine },
         { role: 'user', content: query }
       ],
       max_tokens: 120
-    },
-    json: true
-  }).then(data => {
-    if (data.error) throw new Error(data.error.message || 'OpenAI error');
-    const raw =
-      data.choices && data.choices[0] && data.choices[0].message
-        ? data.choices[0].message.content
-        : null;
-    const text =
-      typeof raw === 'string' && raw.trim()
-        ? raw.trim()
-        : "I didn't catch that. Try something like 'giraffe head' or 'monkey body'!";
-    return { result: { action: '', fulfillment: { speech: text, data: {} } } };
+    })
   });
-}
-
-function mapV2ToV1Format(v2Response) {
-  const qr = v2Response.queryResult || {};
-  const fulfillmentText = qr.fulfillmentText || '';
-  const intent = qr.intent || {};
-  const action = intent.displayName || qr.action || '';
-  const result = {
-    action,
-    fulfillment: { speech: fulfillmentText, data: {} }
-  };
-  const messages = qr.fulfillmentMessages || [];
-  for (const msg of messages) {
-    if (msg.payload && msg.payload.google) {
-      result.fulfillment.data.google = msg.payload.google;
-      break;
-    }
-  }
-  return { result };
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message || 'OpenAI error');
+  const raw = data.choices?.[0]?.message?.content ?? null;
+  const text = typeof raw === 'string' && raw.trim()
+    ? raw.trim()
+    : "I didn't catch that. Try something like 'giraffe head' or 'monkey body'!";
+  return { result: { action: '', fulfillment: { speech: text, data: {} } } };
 }
 
 async function post(req, res) {
-  const query = (req.body.query || req.body.text || '').trim();
-  const sessionId =
-    req.body.sessionId ||
-    req.body.session_id ||
-    'animixer-' + Math.random().toString(36).slice(2, 12);
+  const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
+  const query = (body.query || body.text || '').trim();
+  const sessionId = body.sessionId || body.session_id || 'animixer-' + Math.random().toString(36).slice(2, 12);
 
   if (!query) {
     return res.status(400).json({ error: 'Missing or invalid "query" or "text" in body' });
@@ -191,19 +158,16 @@ async function post(req, res) {
   }
 
   const doneWords = /\b(nothing|done|finish|ready|that's all|skip)\b/i.test(query);
-  if (doneWords && state.head && state.body && !state.legs) {
-    state.legs = state.body;
-  }
-  if (doneWords && state.head && !state.body) {
-    state.body = state.head;
-  }
+  if (doneWords && state.head && state.body && !state.legs) state.legs = state.body;
+  if (doneWords && state.head && !state.body) state.body = state.head;
 
+  const baseUrl = req.headers.origin || req.headers.referer?.replace(/\/$/, '') || ('https://' + (process.env.VERCEL_URL || 'animixer.vercel.app'));
   if (state.head && state.body && state.legs) {
-    const card = buildAnimalCard(state.head, state.body, state.legs);
+    const card = buildAnimalCard(state.head, state.body, state.legs, baseUrl);
     state.head = null;
     state.body = null;
     state.legs = null;
-    return res.json(card);
+    return res.status(200).json(card);
   }
 
   if (OPENAI_KEY) {
@@ -212,41 +176,23 @@ async function post(req, res) {
       if (out && out.result) {
         out.result.suggestedPart = !state.body ? 'body' : (!state.legs ? 'legs' : null);
       }
-      return res.json(out);
+      return res.status(200).json(out);
     } catch (err) {
       console.error('OpenAI chat error:', err);
       return res.status(500).json({ error: err.message || 'OpenAI request failed' });
     }
   }
 
-  if (!projectId) {
-    return res.status(500).json({
-      error:
-        'No OPENAI_KEY/OPENAI_API_KEY or GCLOUD_PROJECT. Set OPENAI_KEY in functions/.env'
-    });
-  }
-
-  try {
-    const dialogflow = require('@google-cloud/dialogflow');
-    const sessionClient = new dialogflow.SessionsClient();
-    const sessionPath = sessionClient.projectAgentSessionPath(projectId, sessionId);
-    const request = {
-      session: sessionPath,
-      queryInput: {
-        text: {
-          text: query,
-          languageCode: req.body.languageCode || 'en'
-        }
-      }
-    };
-    const [response] = await sessionClient.detectIntent(request);
-    return res.json(mapV2ToV1Format(response));
-  } catch (err) {
-    console.error('Dialogflow detectIntent error:', err);
-    return res.status(err.code || 500).json({
-      error: err.message || 'Dialogflow request failed'
-    });
-  }
+  return res.status(500).json({
+    error: 'Set OPENAI_KEY (or OPENAI_API_KEY) in Vercel Environment Variables'
+  });
 }
 
-module.exports = { post };
+module.exports = function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') return res.status(204).end();
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  return post(req, res);
+};
