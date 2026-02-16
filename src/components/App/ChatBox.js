@@ -9,12 +9,10 @@ import Artyom from 'artyom.js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
-import { ApiAiClient } from 'api-ai-javascript';
 
 import Animal from './Animal';
 import Dictation from './Dictation';
 import Speech from './Speech';
-import utils from './../../utils';
 
 const ENTER_KEY_CODE = 13;
 
@@ -132,7 +130,11 @@ class ChatBox extends React.Component {
     super(props);
     const client = props.detectIntentUrl
       ? createProxyClient(props.detectIntentUrl)
-      : new ApiAiClient({ accessToken: this.props.accessToken });
+      : {
+          textRequest() {
+            return Promise.reject(new Error('No chat API URL configured'));
+          }
+        };
     this.state = {
       client,
       artyom: new Artyom(),
