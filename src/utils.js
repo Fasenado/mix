@@ -54,9 +54,14 @@ function getShareUrl(animal1, animal2, animal3) {
   return Host + urlArgs;
 }
 
+const CONTRACT_ADDRESS = 'GPQUKSKqSTGEqrYGxgEaHQ7Q1mAKw6EoCJ3eHjYEpump';
+const TWITTER_HANDLE = 'Safari_Mixer';
+
 export default {
   APIHost,
   Host,
+  CONTRACT_ADDRESS,
+  TWITTER_HANDLE,
   capitalizeFirstLetter,
   getAnimalUrl,
   getShareUrl,

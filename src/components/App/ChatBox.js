@@ -257,8 +257,14 @@ class ChatBox extends React.Component {
           result = "Couldn't parse response. Check console.";
         }
         this.setResponseOnNode(result, responseNode);
-        if (response.result && response.result.suggestedPart) {
-          this.appendChoiceChips(responseNode, response.result.suggestedPart);
+        let part = response.result && response.result.suggestedPart;
+        if (!part && typeof result === 'string') {
+          const s = (result || '').toLowerCase();
+          if (s.includes('body would you like') || s.includes('what body')) part = 'body';
+          else if (s.includes('legs') && (s.includes('would you like') || s.includes('pick'))) part = 'legs';
+        }
+        if (part) {
+          this.appendChoiceChips(responseNode, part);
         }
         if (response.result && response.result.action === 'exit') {
           this.setState({
@@ -458,7 +464,7 @@ class ChatBox extends React.Component {
         `<span class="welcome-example" data-value="${a} head" style="display:inline-block;margin:4px 6px 4px 0;padding:6px 12px;background:#587b14;color:#fff;border-radius:20px;cursor:pointer;font-size:14px;">${a.charAt(0).toUpperCase() + a.slice(1)} Head</span>`
     ).join('');
     node.innerHTML =
-      '<p style="margin:0 0 12px 0;font-weight:bold;">Safari Mixer — миксер животных: создавай виральные варианты и новые мемы и деплой их на Pump Fun.</p>' +
+      '<p style="margin:0 0 12px 0;font-weight:bold;">Safari Mixer — animal mixer: create viral combos and new memes and deploy them on Pump Fun.</p>' +
       '<p style="margin:0 0 8px 0;">What head would you like?</p>' +
       '<p style="margin:0 0 6px 0;font-size:13px;color:#666;">Example:</p>' +
       '<p style="margin:0 0 8px 0;">Monkey Head</p>' +

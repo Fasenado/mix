@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import utils from './../../utils';
 
 const WelcomeContainer = styled.div`
   height: 100vh;
@@ -54,10 +55,12 @@ const CopyableText = styled.div`
   padding: 0;
   cursor: pointer;
   user-select: all;
-  word-break: break-all;
-  max-width: 360px;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
   margin-left: auto;
   margin-right: auto;
+  -webkit-overflow-scrolling: touch;
 `;
 
 const XLink = styled.a`
@@ -79,7 +82,6 @@ const XIcon = styled.svg`
   color: #0f1419;
 `;
 
-const PUMP_ADDRESS = 'GPQUKSKqSTGEqrYGxgEaHQ7Q1mAKw6EoCJ3eHjYEpump';
 const X_URL = 'https://x.com/safari_mixer';
 
 class Welcome extends React.Component {
@@ -90,10 +92,10 @@ class Welcome extends React.Component {
 
   copyAddress = () => {
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(PUMP_ADDRESS);
+      navigator.clipboard.writeText(utils.CONTRACT_ADDRESS);
     } else {
       const el = document.createElement('textarea');
-      el.value = PUMP_ADDRESS;
+      el.value = utils.CONTRACT_ADDRESS;
       document.body.appendChild(el);
       el.select();
       document.execCommand('copy');
@@ -121,7 +123,7 @@ class Welcome extends React.Component {
             <StartText className="center-align">START YOUR SAFARI</StartText>
           </Start>
           <CopyableText onClick={this.copyAddress} title="Click to copy">
-            {PUMP_ADDRESS}
+            {utils.CONTRACT_ADDRESS}
           </CopyableText>
           <div>
             <XLink
