@@ -1,5 +1,5 @@
 {
-  "installCommand": "yarn install --ignore-scripts",
+  "installCommand": "yarn install --ignore-scripts --ignore-engines",
   "buildCommand": "node ./setup && react-scripts build && node ./render",
   "outputDirectory": "build",
   "framework": null,
