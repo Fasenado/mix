@@ -1,0 +1,251 @@
+animals:
+  - antelope
+  - buffalo
+  - bunny
+  - cat
+  - chicken
+  - crocodile
+  - dinosaur
+  - dog
+  - duck
+  - elephant
+  - flamingo
+  - fox
+  - frog
+  - giraffe
+  - goldenlion
+  - gorilla
+  - hippo
+  - hyena
+  - leopard
+  - lion
+  - lizard
+  - monkey
+  - ostrich
+  - pig
+  - pony
+  - puma
+  - rhino
+  - sheep
+  - tiger
+  - tortoise
+  - unicorn
+  - warthog
+  - wildebeest
+  - zebra
+
+animalFull:
+  goldenlion: golden lion
+
+verbs:
+  antelope: bleat
+  buffalo: moo
+  bunny: squeak
+  cat: meow
+  chicken: cock-a-doodle-doo
+  crocodile: snap
+  dinosaur: roar
+  dog: bark
+  duck: quack
+  elephant: trumpet
+  fox: bark
+  flamingo: squawk
+  frog: ribbit
+  giraffe: hum
+  goldenlion: roar
+  gorilla: chatter
+  hippo: grunt
+  hyena: laugh
+  leopard: growl
+  lion: roar
+  lizard: hiss
+  monkey: chatter
+  ostrich: squawk
+  pig: oink
+  pony: neigh
+  puma: growl
+  rhino: snuffle
+  sheep: baa
+  tiger: growl
+  tortoise: mutter
+  unicorn: neigh
+  warthog: oink
+  wildebeest: bellow
+  zebra: neigh
+
+types:
+  animal:
+    - antelope
+    - bunny
+    - buffalo
+    - dog
+    - elephant
+    - fox
+    - giraffe
+    - goldenlion
+    - hippo
+    - hyena
+    - leopard
+    - lion
+    - pig
+    - pony
+    - puma
+    - rhino
+    - sheep
+    - tiger
+    - unicorn
+    - warthog
+    - wildebeest
+    - zebra
+  bird:
+    - chicken
+    - flamingo
+    - duck
+    - ostrich
+  primate:
+    - gorilla
+    - monkey
+  reptile:
+    - crocodile
+    - dinosaur
+    - frog
+    - tortoise
+    - lizard
+
+syllables:
+  antelope:
+    - antel
+    - elo
+    - lope
+  buffalo:
+    - buff
+    - uffa
+    - ffalo
+  bunny:
+    - rabb
+    - abbi
+    - bit
+  cat:
+    - kitt
+    - itte
+    - tten
+  chicken:
+    - chick
+    - icke
+    - cken
+  crocodile:
+    - croc
+    - oco
+    - dile
+  dinosaur:
+    - dino
+    - ino
+    - saur
+  dog:
+    - pupp
+    - uppy
+    - hound
+  duck:
+    - duck
+    - oose
+    - duck
+  elephant:
+    - eleph
+    - epha
+    - phant
+  fox:
+    - fox
+    - oxy
+    - fox
+  flamingo:
+    - flam
+    - ami
+    - mingo
+  frog:
+    - fr
+    - oggy
+    - rog
+  giraffe:
+    - gir
+    - ira
+    - raffe
+  goldenlion:
+    - gold
+    - io
+    - ion
+  gorilla:
+    - gor
+    - illa
+    - rilla
+  hippo:
+    - hipp
+    - opota
+    - tamus
+  hyena:
+    - hyen
+    - ena
+    - yena
+  leopard:
+    - leop
+    - opa
+    - pard
+  lion:
+    - lion
+    - io
+    - ion
+  lizard:
+    - liz
+    - iza
+    - zard
+  monkey:
+    - mon
+    - onke
+    - key
+  ostrich:
+    - ostr
+    - emu
+    - rich
+  pig:
+    - pig
+    - iggy
+    - pig
+  pony:
+    - pon
+    - ony
+    - ny
+  puma:
+    - pum
+    - uma
+    - ma
+  rhinoceros:
+    - rhin
+    - oçe
+    - çeros
+  sheep:
+    - sh
+    - ee
+    - ram
+  tiger:
+    - tig
+    - ige
+    - ger
+  tortoise:
+    - tort
+    - ortoi
+    - toise
+  unicorn:
+    - un
+    - uni
+    - corn
+  warthog:
+    - wart
+    - artho
+    - hog
+  wildebeest:
+    - wild
+    - ebe
+    - beest
+  zebra:
+    - zeb
+    - ebra
+    - bra

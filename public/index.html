@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="theme-color" content="#000000">
+
+  <!-- Facebook share meta data-->
+  <meta property="og:title" content="Safari Mixer">
+  <meta property="og:description" content="Mix and make brand new animals, then watch them come to life. Say ‘#HeyGoogle, talk to Safari Mixer’ to make your own.">
+  <meta property="og:image" content="https://safarimixer.beta.rehab/safari_mixer_logo.png">
+  <meta property="og:image:secure_url" content="https://safarimixer.beta.rehab/safari_mixer_logo.png">
+
+  <!-- Twitter share meta data-->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@noelwilsonrehab">
+  <meta name="twitter:title" content="Safari Mixer">
+  <meta name="twitter:description" content="Mix and make brand new animals, then watch them come to life. Say ‘#HeyGoogle, talk to Safari Mixer’ to make your own.">
+  <meta name="twitter:image" content="https://safarimixer.beta.rehab/safari_mixer_logo.png">
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-115534761-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-115534761-1');
+  </script>
+
+  <!--
+  manifest.json provides metadata used when your web app is added to the
+  homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
+-->
+<link rel="manifest" href="%PUBLIC_URL%/manifest.json">
+<link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
+<!--
+Notice the use of %PUBLIC_URL% in the tags above.
+It will be replaced with the URL of the `public` folder during the build.
+Only files inside the `public` folder can be referenced from the HTML.
+Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+work correctly both with client-side routing and a non-root public URL.
+Learn how to configure a non-root public URL by running `npm run build`.
+-->
+<title>Safari Mixer</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono|Nanum+Gothic">
+<style>
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  font-family: sans-serif;
+}
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=default"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+
+<style>
+.bring-front {
+  position: relative;
+  z-index: 1;
+}
+.clearfix {
+  clear: both;
+}
+.margins {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.image-size {
+  max-width: 100%;
+  max-height: 100%;
+}
+.hidden {
+  display: none;
+  visibility: hidden;
+  opacity: 0;
+}
+.share-button {
+  display: inline-block;
+  margin: 10px 5px;
+}
+.image-div {
+  position: relative;
+}
+.audio-div {
+  position: absolute;
+  bottom:25px;
+  right:0;
+  width: 200px;
+  height: 50px;
+  margin-right: 25px;
+  display: None;
+}
+.scrollDown {
+  transform: translateY(-100vh);
+  transition: transform 400ms ease-in;
+}
+.scrollUp {
+  transform: translateY(0);
+  transition: transform 400ms ease-in;
+}
+.response {
+  background-color: #fffef2;
+  border-radius: 10px 10px 10px 0px;
+  font-family: "Nanum Gothic";
+  font-weight: bold;
+}
+.query {
+  background-color: #597a1f;
+  border-radius: 10px 10px 0px 10px;
+  font-family: "Nanum Gothic";
+  font-weight: bold;
+}
+
+.fadein {
+  -webkit-transition: opacity 0.5s ease-out;
+  -moz-transition: opacity 0.5s ease-out;
+  -ms-transition: opacity 0.5s ease-out;
+  -o-transition: opacity 0.5s ease-out;
+  visibility: visible;
+  opacity: 1;
+}
+
+.fadeout {
+  -webkit-transition: visibility 0s 0.5s, opacity 0.5s ease-out;
+  -moz-transition: visibility 0s 0.5s, opacity 0.5s ease-out;
+  -ms-transition: visibility 0s 0.5s, opacity 0.5s ease-out;
+  -o-transition: visibility 0s 0.5s, opacity 0.5s ease-out;
+  visibility: hidden;
+  opacity: 0;
+}
+
+</style>
+</head>
+
+<body>
+  <noscript>
+    You need to enable JavaScript to run this app.
+  </noscript>
+  <div id="root"></div>
+</body>
+
+</html>

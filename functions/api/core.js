@@ -1,0 +1,40 @@
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const express = require('express');
+
+const animalFactApi = require('./controllers/animalFacts');
+const animalNameApi = require('./controllers/animalName');
+const mixipediaApi = require('./controllers/mixipedia');
+const updateAnimalsApi = require('./controllers/updateAnimals');
+const detectIntentApi = require('./controllers/detectIntent');
+
+const app = express();
+
+// Automatically allow cross-origin requests
+app.use(cors({ origin: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// animal fact endpoint
+app.get('/animalFact', animalFactApi.get);
+
+// animal name endpoint
+app.get('/animalName', animalNameApi.get);
+
+// mixipedia API endpoints
+app.get('/mixipedia', mixipediaApi.list);
+app.get('/mixipedia/:animal1/:animal2/:animal3', mixipediaApi.get);
+app.post('/mixipedia', mixipediaApi.post);
+
+// Update animals API endpoints
+app.get('/updateAnimals', updateAnimalsApi.updateAnimals);
+app.get('/postAnimalsTwitter', updateAnimalsApi.postAnimalsTwitter);
+//app.get('/modifyAnimals', updateAnimalsApi.modifyAnimals);
+
+// Dialogflow ES proxy (for web chat when client token doesn't work with old API)
+app.post('/detectIntent', detectIntentApi.post);
+
+module.exports = app;
