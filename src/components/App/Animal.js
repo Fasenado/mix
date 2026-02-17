@@ -172,8 +172,15 @@ class Animal extends React.Component {
   }
 
   goAnimalUrl() {
-    if (this.props.animalData.animalUrl) {
-      history.push(this.props.animalData.animalUrl);
+    const data = this.props.animalData || {};
+    let target = data.animalUrl;
+    if (!target && data.shareUrl) {
+      const qIndex = data.shareUrl.indexOf('?');
+      const query = qIndex >= 0 ? data.shareUrl.substring(qIndex) : '';
+      target = '/animal' + query;
+    }
+    if (target) {
+      history.push(target);
     }
   }
 
